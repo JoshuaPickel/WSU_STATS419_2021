@@ -1,0 +1,76 @@
+---
+title: "Hello Friend"
+output: pdf_document
+indent: true
+header-includes:
+  # - \usepackage{titling}
+  # - \preauthor{\begin{flushleft}}
+  # - \postauthor{\end{flushleft}}
+  # - \predate{\begin{flushleft}}
+  # - \postdate{\end{flushleft}}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancypagestyle{plain}{\pagestyle{fancy}}
+  - \headsep = 60pt
+
+
+---
+\fancyhead[L]{Josh Pickel \\ STATS419 \\ Instructor: Dr. Shaffer \\ `r format(Sys.time(), '%Y %B %d')`}
+
+```{r setup, include=FALSE}
+library(tinytex)
+knitr::opts_chunk$set(echo = TRUE)
+```
+\fancyhead[RO,RE]{}
+# A Visual Introduction
+```{r, fig.cap = "Radar Graphs Depicting % Mastery of Skills and (0)Low-6(High) Rating of Traits", echo = FALSE}
+
+
+library(fmsb)
+ 
+
+data = as.data.frame(matrix( c(75,50,70,40,25,10,20,5) , ncol=8))
+colnames(data) = c("Computer Science","Statistics","Math","Visualization","Final Work Product","Version Control","EDA","Data Collection")
+data = rbind(rep(100,8) , rep(0,8) , data)
+
+data2 = as.data.frame(matrix( c(5,6,4,4,6) , ncol=5))
+colnames(data2) = c("Leadership","Loyal","Dedication","Critical Thinking","Honesty")
+data2 = rbind(rep(6,5) , rep(0,5) , data2)
+
+par(mfrow=c(1,2))
+par(mar = c(2,0,2,0))
+
+radarchart( data  , axistype=1, 
+ 
+    pcol=rgb(0.2,0.5,0.5,0.9) , pfcol=rgb(0.2,0.5,0.5,0.5) , plwd=3 , 
+
+    cglcol="grey", cglty=1, axislabcol="red", cglwd=2,
+ 
+    vlcex=.7,
+    
+    title = "Skill Mastry in Percent"
+    )
+
+par(mar = c(2,0,2,0))
+
+radarchart( data2  , axistype=1, 
+
+    pcol=rgb(0.2,0.5,0.5,0.9) , pfcol=rgb(0.2,0.5,0.5,0.5) , plwd=3 , 
+ 
+    cglcol="grey", cglty=1, axislabcol="red", cglwd=2, caxislabels = seq(0,6,1.5),
+ 
+    vlcex=.7,
+    
+    title = "Trait Ratings (0)Low-(6)High"
+    )
+```
+
+
+# A Written Introduction
+  My name is Josh Pickel, and I currently reside in Battle Ground, Washington. I was born in Vancouver, Washington, in 1993 and moved to Texas when I was four, residing there until moving to Battle Ground in 2014. I became a General Manager at Chipotle Mexican Grill in 2012, where I was responsible for the oversight of a new store opening in Texarkana, Texas. After a successful new store opening, I realized I was losing passion in the restaurant industry and sick of the Texas heat, so I decided to pursue a new opportunity in the Data Analytics field and move to Battle Ground. I am a Data Analytics major in the business track attending courses at the WSU Vancouver campus and the global campus, set to Graduate Spring 2022. I chose to participate in WSU because the Vancouver campus is close to my home, the campus is small, allowing me to make a better connection with my professors. I was originally pursuing a BA in finance but quickly realized I had a passion for data after taking MIS 250 and falling in love with math and statistics. I am fascinated with the idea of finding hidden insights in data sets and leveraging those insights to make strategic decisions that can improve business operations. I enjoy the fields of statistics, computer science, and mathematics probably more than any other field. I started my journey at WSUV originally worried about my ability to learn higher-level mathematic and statistical concepts but have realized I had nothing to worry about. Although I feel I have amassed a fairly broad skillset, I also know there are plenty of areas in which I can improve to become a successful data analyst.  
+\par
+As a junior in the Data Analytics degree program, I have taken a wide variety of courses and have been able to take something away from each of them. Throughout my journey pursuing my Data Analytics degree, I have gained a solid understanding of computer science and machine learning and a fairly solid understanding of statistical approaches. I also have gained skills in communicating critical findings from simple analyses and am able to communicate these findings to people with a range of backgrounds. I can view data from multiple perspectives to find a common theme appearing within the data and justify how I found said common theme. I am also comfortable experimenting with different visualizations to find an optimal graphic that helps tell the story of the data and communicate the results found within the data. I am a quick learner who values the experiences and input from others and can find a way to learn something from anyone. I am proud of the knowledge I have amassed this far, especially in the field of computer science and statistics. When I first enrolled at WSUV, I never would have thought I would be creating machine learning models to classify breast cancer patients or creating a recommender system like the one Netflix uses for their customers. I have been able to hone my critical thinking skills and attack a problem in a methodical manner that has allowed me to work through a variety of challenges successfully. I understand the core principles of data storage, management, and manipulation from both a technical and managerial perspective. I understand the value data can provide to an organization and the ethical dilemmas that come with using data. I have dedicated much of my time over the past three years to learning these skills and have done what is necessary for me to get where I am at today. I have spent countless hours in various professors’ offices, experimented with various studying techniques, found external resources, collaborated with peers, and talked to a mentor in the data analysis field to make the most of my learning experience. I am continually trying to broaden my knowledge in these areas and realize there are many areas I can make an improvement, even in some of the areas I feel comfortable in.  
+\par
+Even though I feel I have made great progress learning statistical approaches and models, this is one of the areas I have a lot of room for improvement in. I need to broaden my knowledge on how to identify which approach to use given the nature of the data being used and what questions are trying to be answered. I understand the principles of most statistical methods I have learned so far on an individual level but realizing if that method or tool should be used in each scenario has been a challenge for me. I need to work on being able to link the different tools I have learned about statistics together to make the most of an analysis. Within statistics, I need to broaden my knowledge in multivariate statistics, as it seems it will be one of the most relevant subdivisions of statistics I will use in my future career. Another area in which I need to improve is creating a final work product. I can summarize my findings in an efficient manner, but piecing everything together and producing a final work product with a single graphic and not including too much code, etc., is something I have not yet mastered. Being able to explain insights or patterns discovered during an analysis is one thing but piecing it all together as a final work product I would want to present to a boss goes one step beyond where I am currently at.  Version control and data provenance is something else I do not consider myself strong in. I understand the idea of version control and documenting the process so that it can be replicated, or errors can easily be found and reversed, but it is not something I have been able to develop. Most of the projects I have worked on have not emphasized the importance of data provenance, but I have since realized it is extremely important and is also a valuable skill to have. Although I feel that I can view data from multiple perspectives to find a common theme, I feel limited on the tools I have to do so, which is another area I need to improve. I need to work on how I approach EDA and broaden the range of approaches I currently use so I can allow the data to speak for itself as much as possible. I also realize that I need to spend some time expanding my knowledge in data collection. Most of the data I have used is data I did not have to collect, which is not always going to be the case in this field. Even if I do not have to collect data myself, the more I understand about data collection, the more I will be able to scrutinize data quality on data that has already been collected. One reason I need improvement in these areas comes from a lack of recognizing their importance as I have gone through my journey. This does not mean I have deliberately ignored their importance but rather put too much emphasis on learning the basics and losing sight of the bigger picture at times. Some areas, such as version control, have never been discussed this far and have not been something I have taken the time to consider. In the end, I have become proficient in some areas, and in others, I need to focus and spend the time to either learn or enhance my understanding.  
+\par
+Aside from where I feel I am at and why I am there, I want to develop as many skills as I can to become a proficient and successful data analyst. Even after mastering the above-mentioned skills, I want to further my knowledge in the field of data analysis post-graduation. I want to add value to a company and assist them in expanding their success through leveraging data sets to find insight and drive key business decisions. I think I will eventually end up getting a master’s in data analytics after gaining some on the job experience to meet my goal of continual learning. Ideally, my first job would be as a data analyst at a small to medium-sized company that is willing to invest in analytical infrastructure. I would love to eventually use the managerial skills I developed during my time at Chipotle and lead a team of data analysts/scientists and hone my managerial skills even further. Not only do I want to be able to be a proficient data analyst myself, I want to be able to contribute to the community, whether colleagues on campus or at work or even on online communities such as Stack Overflow. Eventually, I would like to own a consulting firm and use my skills learned through the degree and on the job to help struggling businesses leverage analytics or even help businesses expand their current analytical capabilities or infrastructure. Wherever I end up, I want to use the skills I have learned to extract insight from data and use those insights to make decisions that were otherwise near impossible to make.
