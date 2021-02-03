@@ -34,9 +34,9 @@ handShake = function(n=1, plotMe=FALSE)
 
 
 Determinant = function(matrix){
-  if(class(matrix)[1]!= "matrix") 
+  if(class(matrix)[1]!= "matrix" || nrow(matrix) != 3 || ncol(matrix) != 3) 
   {
-    print("You did not give the function a matrix, try again")
+    print("You did not give the function a matrix, or the matrix was not a 3x3,  try again")
   }
   else
   {
@@ -44,16 +44,13 @@ Determinant = function(matrix){
     for (i in 1:ncol(matrix) )
     {
       twoBytwo = matrix[-1,-i]
-      print(twoBytwo)
       detTwo = (twoBytwo[1,1]*twoBytwo[2,2]) - (twoBytwo[1,2] * twoBytwo[2,1])
       dets = c(dets,detTwo)
-      print(detTwo)
     }
     products = matrix[1,] * dets
-    print(products)
     determinant = products[1] - products[2] + products[3]
   }
-  print(determinant)
+  return(determinant)
 }
 
 
