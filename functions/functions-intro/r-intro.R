@@ -23,8 +23,8 @@ handShake = function(n=1, plotMe=FALSE)
       c = rep("red",45)
       allPeople = combn(people,2)
       graph = graph( edges = allPeople, directed = T)
-      plot(graph,edge.arrow.mode = 3, edge.arrow.size = .25, edge.color = c, vertex.size = 25,vertex.color = "grey",
-           vertex.frame.color = "black", edge.color = rainbow(number_of_handShakes), layout = layout_in_circle )
+      plot(graph,edge.arrow.mode = 3, edge.arrow.size = .25, vertex.size = 25,vertex.color = "grey",
+           vertex.frame.color = "black", edge.color = c, layout = layout_in_circle )
     }
     sprintf("The number of handshakes between %i people is %i", n, number_of_handShakes)
   }
