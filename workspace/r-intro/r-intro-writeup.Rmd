@@ -29,7 +29,7 @@ The funtionI created akes in an interger representing the number of people shaki
 
 ```{r, r-intro handShakefunction, fig.cap = "Network Graph Depicting the Handshakes Between 5 People", message=FALSE}
 library(igraph)
-handShake(n=10,plotMe = TRUE)
+handShake(n=5,plotMe = TRUE)
 
 ```
 With 5 people shaking hands, there is a total of 10 handshakes that can occur. Each handshake is represented in the network graph, showing each person and their respective handshakes. There are arrows on both ends of each line connecting each person as they shook each others hands. 
