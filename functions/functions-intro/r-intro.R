@@ -2,7 +2,7 @@
 
 handShake = function(n=1, plotMe=FALSE)
 {
-  if (n<=0 || n > 1000)
+  if (n<=0 || n > 40)
   {
     print("Not a valid number, number of people must be greater than 0, and less than 41 ")
   }

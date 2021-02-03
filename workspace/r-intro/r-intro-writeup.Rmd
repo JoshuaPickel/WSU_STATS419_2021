@@ -37,16 +37,32 @@ With 5 people shaking hands, there is a total of 10 handshakes that can occur. E
 
 The function created for this task takes in the file name of the Declaration of Independence version, and counts the number of letters used in the version being passed. The results are shown below as a table and as a bar chart showing how many times each letter has been used in the file provided to the function.
 
-```{r, letter count for original draft of Declaration of Independence}
+```{r, letter count for original draft of Declaration of Independence, fig.cap = "Count of Letters Used in original.txt"}
 count_letters('original.txt')
 
 ```
 
-
-```{r, letter count for final draft of Declaration of Independence}
+\newpage
+```{r, letter count for final draft of Declaration of Independence,fig.cap = "Count of Letters Used in final.txt"}
 
 count_letters('final.txt')
 ```
+
+# Matrix Determinant
+
+The function written to compute the determinant of a 3x3 matrix takes in a matrix and checks it is a 3x3. It will then "manually" compute the determinant (by that I mean I did not call on det()). The function is demonstrated below. 
+
+```{r, 3x3 matrix determinant }
+myMatrix = matrix(c(6,4,2,1,-2,8,1,5,7),nrow = 3, ncol = 3)
+print(myMatrix)
+determinant = Determinant(myMatrix)
+print(determinant)
+
+```
+Using this example matrix "myMatrix", we can see the determinant is -306. 
+
+
+
 
 
 

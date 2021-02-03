@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2021.2.1)  2 FEB 2021 20:48
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2021.2.1)  2 FEB 2021 21:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -539,7 +539,7 @@ LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1
 (c:/Users/joshm/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-<r-intro-writeup_files/figure-latex/r-intro handShakefunction-1.pdf, id=12, 469
+<r-intro-writeup_files/figure-latex/r-intro handShakefunction-1.pdf, id=16, 469
 .755pt x 325.215pt>
 File: r-intro-writeup_files/figure-latex/r-intro handShakefunction-1.pdf Graphi
 c file (type pdf)
@@ -564,6 +564,15 @@ LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line
 (c:/Users/joshm/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmtt.fd
 File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
+<r-intro-writeup_files/figure-latex/letter count for original draft of Declarat
+ion of Independence-1.pdf, id=34, 469.755pt x 325.215pt>
+File: r-intro-writeup_files/figure-latex/letter count for original draft of Dec
+laration of Independence-1.pdf Graphic file (type pdf)
+<use r-intro-writeup_files/figure-latex/letter count for original draft of Decl
+aration of Independence-1.pdf>
+Package pdftex.def Info: r-intro-writeup_files/figure-latex/letter count for or
+iginal draft of Declaration of Independence-1.pdf  used on input line 160.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 46.48878pt, for example:
@@ -572,18 +581,47 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-34.48878pt}.
 
-[2] (./r-intro-writeup.aux)
+[2 <./r-intro-writeup_files/figure-latex/letter count for original draft of Dec
+laration of Independence-1.pdf>]
+<r-intro-writeup_files/figure-latex/letter count for final draft of Declaration
+ of Independence-1.pdf, id=47, 469.755pt x 325.215pt>
+File: r-intro-writeup_files/figure-latex/letter count for final draft of Declar
+ation of Independence-1.pdf Graphic file (type pdf)
+<use r-intro-writeup_files/figure-latex/letter count for final draft of Declara
+tion of Independence-1.pdf>
+Package pdftex.def Info: r-intro-writeup_files/figure-latex/letter count for fi
+nal draft of Declaration of Independence-1.pdf  used on input line 181.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 46.48878pt, for example:
+(fancyhdr)                \setlength{\headheight}{46.48878pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-34.48878pt}.
+
+[3 <./r-intro-writeup_files/figure-latex/letter count for final draft of Declar
+ation of Independence-1.pdf>]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 46.48878pt, for example:
+(fancyhdr)                \setlength{\headheight}{46.48878pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-34.48878pt}.
+
+[4] (./r-intro-writeup.aux)
 Package rerunfilecheck Info: File `r-intro-writeup.out' has not changed.
-(rerunfilecheck)             Checksum: 6E74ACA9AF6CC1AFBAEA13990FA29CAF;573.
+(rerunfilecheck)             Checksum: DE488D90F86E7F6C8FAC85AA877A4ECF;710.
  ) 
 Here is how much of TeX's memory you used:
- 11094 strings out of 481252
- 161251 string characters out of 5913866
- 453633 words of memory out of 5000000
- 27850 multiletter control sequences out of 15000+600000
+ 11114 strings out of 481252
+ 162577 string characters out of 5913866
+ 453674 words of memory out of 5000000
+ 27862 multiletter control sequences out of 15000+600000
  434340 words of font info for 51 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 71i,11n,74p,487b,343s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 71i,11n,74p,487b,359s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/Users/joshm/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.
 enc}{c:/Users/joshm/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec
 .enc}<c:/Users/joshm/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/l
@@ -591,10 +629,10 @@ mbx12.pfb><c:/Users/joshm/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public
 /lm/lmr10.pfb><c:/Users/joshm/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/pu
 blic/lm/lmr17.pfb><c:/Users/joshm/AppData/Roaming/TinyTeX/texmf-dist/fonts/type
 1/public/lm/lmtt10.pfb>
-Output written on r-intro-writeup.pdf (2 pages, 114853 bytes).
+Output written on r-intro-writeup.pdf (4 pages, 127451 bytes).
 PDF statistics:
- 57 PDF objects out of 1000 (max. 8388607)
- 46 compressed objects within 1 object stream
- 8 named destinations out of 1000 (max. 500000)
- 22 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 87 PDF objects out of 1000 (max. 8388607)
+ 70 compressed objects within 1 object stream
+ 14 named destinations out of 1000 (max. 500000)
+ 40 words of extra memory for PDF output out of 10000 (max. 10000000)
 
