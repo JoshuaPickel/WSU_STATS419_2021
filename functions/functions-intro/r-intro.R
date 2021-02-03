@@ -70,5 +70,7 @@ count_letters = function(file)
   {
     res = res[,c(2:length(res),1)]
   }
+  title = paste("Letters In", file)
+  barplot(as.table(as.matrix(res)), xlab = 'Letter',ylab = 'Frequency', main = title)
   res
 }

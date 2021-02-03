@@ -1,0 +1,139 @@
+---
+title: "R-intro Friend"
+output: pdf_document
+indent: true
+header-includes:
+  # - \usepackage{titling}
+  # - \preauthor{\begin{flushleft}}
+  # - \postauthor{\end{flushleft}}
+  # - \predate{\begin{flushleft}}
+  # - \postdate{\end{flushleft}}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancypagestyle{plain}{\pagestyle{fancy}}
+  - \headsep = 60pt
+---
+
+\fancyhead[L]{Josh Pickel \\ STATS419 \\ Instructor: Dr. Shaffer \\ `r format(Sys.time(), '%Y %B %d')`}
+```{r, top of the world,echo = FALSE}
+library(devtools)
+source_url("https://raw.githubusercontent.com/JoshuaPickel/WSU_STATS419_2021/main/functions/functions-intro/r-intro.R")
+
+```
+
+
+```{r, demonstrate handshake function}
+library(igraph)
+handShake = function(n=1, plotMe=FALSE)
+{
+  if (n<=0 || n > 1000)
+  {
+    print("Not a valid number, number of people must be greater than 0, and less than 41 ")
+  }
+  else
+  {
+    number_of_handShakes = n*(n-1)/2
+    number_of_handShakes
+    
+    if (plotMe == TRUE)
+    {
+      people = c()
+      
+      for (i in 1:n)
+      {
+        node = paste0("Person",i)
+        people = c(people,node)
+      }
+      
+      allPeople = combn(people,2)
+      graph = graph( edges = allPeople, directed = T)
+      plot(graph,edge.arrow.mode = 3, edge.arrow.size = .25,vertex.size = 25,vertex.color = "grey",
+           vertex.frame.color = "black", edge.color = rainbow(number_of_handShakes), layout = layout_in_circle )
+    }
+    
+  }
+  sprintf("The number of handshakes between %i people is %i", n, number_of_handShakes)
+}
+handShake(n=5,plotMe = TRUE)
+```
+
+
+```{r}
+
+library(readr)
+
+count_letters = function(file)
+{
+  original = paste(readLines(file),collapse = "")
+  original = gsub(" ", "", original)
+  original = tolower(original)
+  original = gsub("[^A-Za-z]", "!", original)
+  original = strsplit(original, "")
+  res = as.data.frame(t(as.matrix(table(original))))
+  colnames(res)[colnames(res) =='!'] = "OTHER"
+  if (length(res) > 1)
+  {
+  res = res[,c(2:length(res),1)]
+  }
+  res
+
+
+}
+results_draft = count_letters('original.txt')
+barplot(as.table(as.matrix(results_draft)), xlab = 'Letter',ylab = 'Frequency', main = "Letters In Original Draft")
+
+results_final = count_letters('final.txt')
+barplot(as.table(as.matrix(results_final)), xlab = 'Letter',ylab = 'Frequency', main = "Letters In Final Draft")
+
+
+
+```
+
+```{r}
+count_letters = function(file)
+{
+  original = paste(readLines(file),collapse = "")
+  original = gsub(" ", "", original)
+  original = tolower(original)
+  original = gsub("[^A-Za-z]", "!", original)
+  original = strsplit(original, "")
+  res = as.data.frame(t(as.matrix(table(original))))
+  colnames(res)[colnames(res) =='!'] = "OTHER"
+  if (length(res) > 1)
+  {
+    res = res[,c(2:length(res),1)]
+  }
+  title = paste("Letters In", file)
+  barplot(as.table(as.matrix(res)), xlab = 'Letter',ylab = 'Frequency', main = title)
+  res
+}
+count_letters('original.txt')
+```
+
+
+```{r, matrix determinant}
+
+Determinant = function(matrix){
+  if(class(matrix)[1]!= "matrix") 
+  {
+    print("You did not give the function a matrix, try again")
+  }
+  else
+  {
+    dets = c()
+    for (i in 1:ncol(matrix) )
+    {
+      twoBytwo = matrix[-1,-i]
+      print(twoBytwo)
+      detTwo = (twoBytwo[1,1]*twoBytwo[2,2]) - (twoBytwo[1,2] * twoBytwo[2,1])
+      dets = c(dets,detTwo)
+      print(detTwo)
+    }
+   products = matrix[1,] * dets
+   print(products)
+   determinant = products[1] - products[2] + products[3]
+  }
+  print(determinant)
+}
+
+```
