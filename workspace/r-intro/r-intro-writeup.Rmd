@@ -26,9 +26,10 @@ source_url("https://raw.githubusercontent.com/JoshuaPickel/WSU_STATS419_2021/mai
 
 The funtionI created akes in an interger representing the number of people shaking hands, and it determines the number of handshakes that occur. It has an option to plot the results as a network graph, as demonstrated below.
 
+
 ```{r, r-intro handShakefunction, fig.cap = "Network Graph Depicting the Handshakes Between 5 People", message=FALSE}
 library(igraph)
-handShake(n=5,plotMe = TRUE)
+handShake(n=10,plotMe = TRUE)
 
 ```
 With 5 people shaking hands, there is a total of 10 handshakes that can occur. Each handshake is represented in the network graph, showing each person and their respective handshakes. There are arrows on both ends of each line connecting each person as they shook each others hands. 
@@ -53,7 +54,7 @@ count_letters('final.txt')
 The function written to compute the determinant of a 3x3 matrix takes in a matrix and checks it is a 3x3. It will then "manually" compute the determinant (by that I mean I did not call on det()). The function is demonstrated below. 
 
 ```{r, 3x3 matrix determinant }
-myMatrix = matrix(c(6,4,2,1,-2,8,1,5,7),nrow = 3, ncol = 3)
+myMatrix = matrix(c(6,4,2,1,-2,8,1,5,7),nrow = 4, ncol = 3)
 print(myMatrix)
 determinant = Determinant(myMatrix)
 print(determinant)
