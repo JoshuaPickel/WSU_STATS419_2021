@@ -26,9 +26,9 @@ source_url("https://raw.githubusercontent.com/JoshuaPickel/WSU_STATS419_2021/mai
 library(igraph)
 handShake = function(n=1, plotMe=FALSE)
 {
-  if (n<=0 || n > 1000)
+  if (n<=0 || n > 1000 || floor(n) != n)
   {
-    print("Not a valid number, number of people must be greater than 0, and less than 41 ")
+    stop("Not a valid number, number of people must be greater than 0, and less than 41 ")
   }
   else
   {
@@ -43,18 +43,18 @@ handShake = function(n=1, plotMe=FALSE)
       {
         node = paste0("Person",i)
         people = c(people,node)
-      }
-      c = rep("blue",780)
+
       allPeople = combn(people,2)
       graph = graph( edges = allPeople, directed = T)
-      plot(graph,edge.arrow.mode = 3,edge.color = c, edge.arrow.size = .25,vertex.size = 25,vertex.color = "grey",
+      plot(graph,edge.arrow.mode = 3,edge.color = "blue", edge.arrow.size = .25,vertex.size = 25,vertex.color = "grey",
            vertex.frame.color = "black", layout = layout_in_circle )
     }
     
   }
   sprintf("The number of handshakes between %i people is %i", n, number_of_handShakes)
+  }
 }
-handShake(n=40,plotMe = TRUE)
+handShake(n=1,plotMe = TRUE)
 ```
 
 
@@ -124,16 +124,22 @@ Determinant = function(matrix){
     for (i in 1:ncol(matrix) )
     {
       twoBytwo = matrix[-1,-i]
-      print(twoBytwo)
       detTwo = (twoBytwo[1,1]*twoBytwo[2,2]) - (twoBytwo[1,2] * twoBytwo[2,1])
       dets = c(dets,detTwo)
-      print(detTwo)
     }
    products = matrix[1,] * dets
-   print(products)
+   
    determinant = products[1] - products[2] + products[3]
   }
   print(determinant)
 }
 
 ```
+
+```{r}
+a = c("hello","world")
+b = c("hello","justin")
+sym_diff <- function(a,b) setdiff(union(a,b), intersect(a,b))
+sym_diff(a,b)
+```
+
