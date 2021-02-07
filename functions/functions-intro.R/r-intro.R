@@ -101,9 +101,9 @@ computeDeterminant = function(matrix){
 }
 
 
-count_letters = function(file, plotMe = FALSE)
+count_letters = function(file, plotMe = FALSE, path = "local")
 {
-  if (file_test("-f", file) == TRUE)
+  if (file_test("-f", file) == TRUE ||path == "Github")
     {
 
     # Read the file and collapse the lines
@@ -138,7 +138,8 @@ count_letters = function(file, plotMe = FALSE)
     {
     # Make a dynamic title for the graph
      title = paste("Letters In", file)
-  
+     widths = c(rep(.5,length(res)))
+     # 
      # Make a bar plot for the results
      barplot(as.table(as.matrix(res)), xlab = 'Letter',ylab = 'Frequency', main = title, ylim = c(0,1200))
      }
