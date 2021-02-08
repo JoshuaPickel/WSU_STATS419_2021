@@ -51,7 +51,7 @@ handShake = function(n=1, plotMe=FALSE)
         
         #Plot the graph
         plot(graph,edge.arrow.mode = 3, edge.arrow.size = .25, vertex.size = 50,vertex.color = "grey",
-             vertex.frame.color = "black", edge.color = rainbow(number_of_handShakes), layout = layout_in_circle, main = paste("Number of Handsakes Between ", number_of_handShakes, "People") )
+             vertex.frame.color = "black", edge.color = rainbow(number_of_handShakes), layout = layout_in_circle, main = paste("Handsakes Between ", n, "People") )
       }
      
     }
