@@ -1,0 +1,92 @@
+---
+title: 'R Notebook: O-well'
+author: "Josh Pickel [Joshua.Pickel]"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+
+```{r, top of the world}
+
+
+# which.github = "local"
+# 
+# # Local Github 
+# github.local = "C:/_git_/github/JoshuaPickel/WSU_STATS419_2021/"
+# 
+# 
+# # Remote Github
+# github.remote = "https://raw.githubusercontent.com/JoshuaPickel/WSU_STATS419_2021/main/"
+# 
+#   # Determine which github to use
+#  if(which.github == "remote")
+#    {
+#    include.me = paste0( github.remote, "functions/functions-intro.R/r-intro.R");
+#    library(devtools);
+#    source_url(include.me);
+#    } else {
+#            include.me = paste0( github.local, "functions/functions-intro.R/r-intro.R");
+#           source(include.me);
+#            }
+
+
+```
+
+
+# Reading in Well Data
+
+## Method
+
+To read in the data for the first table, I simply copy and pasted the table from the pdf into notepad, saving it as a .txt. I removed the "ug/L", "Borehole", the tables title labels and the "Mean","Max","Min","Median","SD,"N" and the key for those terms,so that the file could be read in as a data frame. After removing the "ug/L" and "Borehole", the title, and the various statistics, I saved a new version to document what was removed. That way I have what I started with, and the venison I wanted to work with. 
+
+To read in the data for the second table, I did the same thing. I copied the table into notepad , to save it as a .txt file. I then removed the title of the table, "Borehole", "mV mg/L" and the "Mean", "Max", "SD" for wells 1-17 and wells 18-21, as well as the the key for those terms. After deleting the "mV mg/L", "Borehole" and the various statistics, I save a new version to document what was removed. That was the second table is stored with the data i want to work with, and the original version. 
+
+# Adding to the Data
+
+## Location
+
+For each of the two dataframes, I added the longitude, latitude and altitude of each well provided to me. I looked at the longitude, latitude and altitude that you manually entered to make sure it seemed to make sense, which it does. 
+
+## Fault Distance
+
+For each well, I used the .kml file provided to me, double checked the coordinates again, and used the ruler tool to draw lines from the center of the well to the closest fault line I could see to find the distance in meters. I recorded these in a vector, and added it to each data frame. 
+
+## Geology
+
+For each well, I looked at the .png image to determine what type of geological base the well is in. For each base, I used the first word that describes the base. Some of the wells had multiple strings, as they sit between two bases. After the vector was made, i appended it to the end of each data frame.
+
+# Description of the Data in the End
+The source of the data is from an article written in 2013 called "Groundwater Quality of Coastal Aquifer Systems in the Eastern Coast of the Gulf of Aqaba, Saudi Arabia" written by Ahmed A Al-Taani, Awni T Batayneh, Saad Mogren, Yousef Habous Nazzal. The purpose of the article is to assess shallow groundwater quality along the Gulf of Aqaba. It also aims to determine the status of saline intrusions, the cause of groundwater contamination and the potential for contamination. After modifying the data for table1, it contains 15 columns which represent different dissolved metals in the 23 wells analyzed in the article. The values are rounded to the nearest 100th for the different metals. The 16th column is the well number, the 16th, 17th and 18th columns are longitude, latitude and altitude respectively. Columns 20 and 21 are the distance in meters to the nearest fault, and the geological composition of the well respectively. For table2, it contains 20 columns which represent different physical and chemical parameters for the 23 wells analyzed.  The 21st column is the well number, the 22nd, 23rd and 24th columns are longitude, latitude and altitude respectively. Columns 25 and 26 are the distance in meters to the nearest fault, and the geological composition of the well respectively.
+
+My github repository, as well as the dropbox data folder contains a README.txt offering further description of the data sets, and provides a data dictionary for each of the tables. 
+
+```{r, reading in well data}
+
+owell.metals = read.table('table1.txt');
+owell.chemistry = read.table("table2.txt");
+wells.locations = read.table("wells-location.txt", sep = "|",header = TRUE);
+owell.metals = cbind(owell.metals, wells.locations);
+owell.chemistry = cbind(owell.chemistry,wells.locations);
+
+fault.dist = c(900,580,238,1652,550,1780,350,738,1306,850,670,548,2193,2200,1512,488,560,6100,2000,2173,1865,4561,494);
+
+owell.chemistry$fault = fault.dist;
+owell.metals$fault = fault.dist;
+
+geology = c("Sand","Alkaline ,Granite","Alkaline"," Alkaline","Granite, Volcanic","Volcanic","Gypsum","Alkaline","Gypsum","Volcanic","Alkaline, Granite","Granite","Gypsum","Gypsum","Volcanic","Alkaline, Granite, Volcanic","Sand, Gypsum","Sand","Sand","Sand","sand","Sand","Alkaline, Granite");
+
+owell.chemistry$geology = geology;
+owell.metals$geology = geology ;
+
+
+wells = list();
+wells$saudi = list();
+wells$saudi$metals = owell.metals;
+wells$saudi$chemistry = owell.chemistry;
+
+saveRDS(wells, "wells.rds");
+
+
+```

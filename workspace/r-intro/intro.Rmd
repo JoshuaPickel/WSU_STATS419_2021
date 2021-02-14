@@ -1,0 +1,122 @@
+---
+title: 'R Notebook: intro'
+author: "Josh Pickel [Joshua.Pickel]"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+
+
+```{r, top of the world}
+
+#install.packages("igraph")
+#install.packages("devtools")
+#install.packages("RCurl")
+# github.JoshuaPickel
+
+# library(igraph)
+# library(devtools)
+#library(RCurl)
+
+which.github = "local"
+
+# Local Github 
+github.local = "C:/_git_/github/JoshuaPickel/WSU_STATS419_2021/"
+
+
+# Remote Github
+github.remote = "https://raw.githubusercontent.com/JoshuaPickel/WSU_STATS419_2021/main/"
+
+  # Determine which github to use
+ if(which.github == "remote")
+   {
+   include.me = paste0( github.remote, "functions/functions-intro.R/r-intro.R");
+   library(devtools);
+   source_url(include.me);
+   } else {
+           include.me = paste0( github.local, "functions/functions-intro.R/r-intro.R");
+          source(include.me);
+           }
+
+```
+
+
+# Handshake
+The handShake function is a function that calculates the number of handshakes that occur between to provided number of people, and plots the results as a network graph.
+
+## Function Parameters
+The handShake function takes in an integer between 1 and 40, inclusive. The reason I chose to have to program not accept values above 40 is because making the network graph of handshakes with more that 40 people becomes really slow. I figured this is an acceptable number to stop at, as the visualization of increasing number of handshakes can be seen by using values in between 1 and 40. The function also takes in a boolean value for plotting purposes. If the function is given a number outside of the acceptable range of 1 through 40, an error message will appear stating " Error in handShake(" ", TRUE) : Not a valid number, number of people must be greater than 0, and less than 41" where " " in the error message is what the user passed, and the program will stop. The function checks that the argument passed is of numeric class then checks if number is between 1 and 40, inclusive, and then checks to make sure it is a whole number by checking if the floor value of the number is the same as the number itself. The function then determines if the user wants the results to be plotted, and if so, creates labels for the number of people shaking hands. It does this by looping through 1:n, and adding the number to the end of the string "Person", and adding the result to a list. The function then checks if the number of people passed is 1, and if it is, it graphs only one node on the vertex graph. If the number of people passed is greater than 1, it will graph all of the possible handshakes, with unique colors for each handshake on the network graph. The function the returns the number of handshakes possible between the number of people passed. 
+
+## Calculation of plotMe
+To calculate the combinations of handshakes to graph, I made a helper function. The helper function takes the list of people, uses two for loops (nested) to store the combinations of two people shaking hands and stores the results in a matrix. The first for loop goes through all elements in the list except the last one, and the second loop starts at the element after the element the first loop is on through all of the elements in the list. So the two for loops makes the pair combinations with the first element, then the second element and so on until all combinations (no repeats) are made. Once all pair combinations are made, the function returns all possible pairs in a matrix to be used for plotting. I used the igrpah library to plot the results as a network graph. It takes the list of handshake combinations to create a graph object, then I used the plot function with various parameters to get the desired results. I made each line representing the handshake between two people a different color for each handshake by using the rainbow function. The plot also creates a dynamic title for the network graph by using the paste function. The results can be seen below running the program with 10 people shaking hands.
+
+```{r, handShake function, fig.cap = "Network Graph Showing All HandShakes", message = FALSE}
+ handShake(10, TRUE)
+```
+So we can see that the number of handshakes that can happen between 10 people is 45. And the network graph has 10 people, and all of the handshakes represented by lines connecting the vertices, all with different colors (Some are very similar, but they are different).
+
+# Alphabet Declaration of Independence
+The count_letter function takes in a file, and counts the number of letters in that file and returns the results as a bar graph. 
+
+## Function Parameters
+The count function must have a file/Github file URL passed to it. The function has a parameter called path, in which you need to pass "local" if you are using a locally stored file, or "Github" is you are passing a file that is being remotely accessed by github. I could not figure out how to test if the github url will provider a file, but is something I wrote down in my journal to figure out. If the path is "local",  the function will first test to make sure the path of file name provided is valid, and if it is not, it will display the message "Error in count_letters(" ") : The file name or path provided does not exist." where " " in the error message is whatever the user passed, and the function will stop. The function also has a plotMe parameter, which is a boolean value that will determine if the function will plot the results as a bar graph. 
+
+## Calculation of letter counts
+The function first reads the file using the readLines function, and the paste function at the same time with a collapse parameter set to "" used in the paste function. This combines all of the letters into one large string, but there are still spaces in the long string where the new lines were in the original file. To handle this, the function uses the gsub function to replace the spaces with "", which removes the spaces. The function then converts all letters to lowercase, as I feel the capitalization of letters should not matter within the context of wanting to know how many times each letter was used in the draft and final version of the Declaration. The function then replaces all non alpha characters to a "!", so it can then count how many characters were not letters. The function then makes a data frame by making a matrix of a table (to get the counts), and then replaces the "!" column name to "OTHER". The function will then check the data frame to see if more than one letter was used, and if so, then it will reorder the columns by placing the "OTHER" column at the end of the data frame. The function then determines if the user wants to plot the results, and if so, then creates a dynamic title for the bar plot using the paste function to make a title in the form "Letters In filename" where filename is the path/file the user provided. The function then returns the data frame along with the plot. 
+
+## Letters Used in Draft
+
+```{r, Independence document letter count for draft, fig.cap = "Bar Graph Decpicting Letter Frequency in Declaration Of Independence Draft"}
+count_letters('original.txt', plotMe = TRUE)
+```
+We can see that 'e' is the most common letter that was used in the drat, and was used quite a bit more than any other letter. We can also see that 'j,','k','q','x','z' were very rarely used, far less than any of the other letters. 
+
+
+## Letters Used in Final Version
+```{r, Independence document letter count for final,fig.cap = "Bar Graph Decpicting Letter Frequency in Declaration Of Independence Final Version"}
+count_letters("final.txt", TRUE, path = "Github")
+```
+We can see that 'e' was also the most commonly used letter in the final version, and was also used quite a bit more than ay other letter. We can also see that 'j,','k','q','x','z' were very rarely used, far less than any of the other letters, the same as the draft. 
+
+## Comparison
+Between the two versions of the Declaration of Independence, the distribution of the letters is near identical. Both graphs look exactly the same, but the frequency is lower in the final version than the draft for most of the letters. This tells me that while less letters were used in the final version, there seems to be some sort of similar ration of the letters used between the two versions. 
+
+# Determinant of 3x3 matrix
+The computeDeterminant function takes a 3x3 matrix and calculates and returns it's determinant value. The formula to calculate the determinant of a 3x3 matrix: $A = \begin{bmatrix}
+a & b & c\\
+d & e & f\\
+g & h & i
+\end{bmatrix}$
+
+is $|A| = a \space \times \begin{vmatrix}
+e & f \\
+h & i \\
+\end{vmatrix} -\space b\space \times \begin{vmatrix}
+d & f \\
+g & i \\
+\end{vmatrix} + c\space \times \begin{vmatrix}
+d & e \\
+g & h \\
+\end{vmatrix}$
+
+Which is equivalent to $|A| = a(ei - fh) - b(di - fg) + c(dh - eg)$
+
+This is the same formula I used in the computeDeterminant function. 
+
+## Function Parameters
+The computeDeterminant function must be provided a 3x3 matrix in order for it to work. The function will check that what the user passes is a matrix class, and that it's dimensions are a 3x3. If it is not a matrix, or is not a 3x3 matrix, the function will display the error message "Error in Determinant("a") : You did not give the function a matrix, or the matrix was not a 3x3, try again" and the program will stop. If a 3x3 matrix was passed, the function will proceed to calculate the determinant. 
+
+## Calcuating The Determinant
+To calculate the determinant of the 3x3 matrix, the function will first make an empty list to hold the determinant values of the 2x2 matrices in the 3x3 matrix. The program will loop through the number of columns (3), and get the 2x2 matrix by ignoring the first row, and the column the for loop is currently on. It will then calculate the 2x2 matrix's determinant by multiplying the value at (1,1) by the value at (2,2) and subtracting the the product of the value at (1,2) * (2,1). The determinant value is then stored in the determinant list. The function will iterate though all of the columns to get all of the relevant 2x2 matrice's determinant values needed to calculate the determinant of the 3x3 matrix. The function then multiplies the values in the first for of the 3x3 matrix by the 2x2 determinant values. The result is stored, and then the first element of the result is subtracted by the second element, which then gets the third elements value added to it. This is the final determinant for the 3x3 matrix, which is returned at the end of the function. The function is demonstrated below.
+
+```{r}
+# Making a 3x3 matrix
+myMatrix = matrix(c(6,4,2,1,-2,8,1,5,7),nrow = 3, ncol = 3)
+computeDeterminant(myMatrix)
+```
+We can see that the determinant of myMatrix is -306, which is correct when comparing to a manual calculation. 
+
+
+
