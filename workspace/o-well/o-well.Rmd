@@ -11,25 +11,15 @@ output:
 ```{r, top of the world}
 
 
-# which.github = "local"
-# 
-# # Local Github 
-# github.local = "C:/_git_/github/JoshuaPickel/WSU_STATS419_2021/"
-# 
-# 
-# # Remote Github
-# github.remote = "https://raw.githubusercontent.com/JoshuaPickel/WSU_STATS419_2021/main/"
-# 
-#   # Determine which github to use
-#  if(which.github == "remote")
-#    {
-#    include.me = paste0( github.remote, "functions/functions-intro.R/r-intro.R");
-#    library(devtools);
-#    source_url(include.me);
-#    } else {
-#            include.me = paste0( github.local, "functions/functions-intro.R/r-intro.R");
-#           source(include.me);
-#            }
+which.github = "remote"
+
+# Remote Github
+github.path = "https://raw.githubusercontent.com/JoshuaPickel/WSU_STATS419_2021/main/datasets/o-well/"
+
+table1 = paste0(github.path, "table1.txt")
+table2 = paste0(github.path, "table2.txt")
+wells_loc = paste0(github.path, "wells-location.txt")
+
 
 
 ```
@@ -43,44 +33,70 @@ To read in the data for the first table, I simply copy and pasted the table from
 
 To read in the data for the second table, I did the same thing. I copied the table into notepad , to save it as a .txt file. I then removed the title of the table, "Borehole", "mV mg/L" and the "Mean", "Max", "SD" for wells 1-17 and wells 18-21, as well as the the key for those terms. After deleting the "mV mg/L", "Borehole" and the various statistics, I save a new version to document what was removed. That was the second table is stored with the data i want to work with, and the original version. 
 
+```{r, reading in data}
+owell.metals = read.table(table1);
+owell.chemistry = read.table(table2);
+owell.metals;
+owell.chemistry;
+```
+
+
 # Adding to the Data
 
 ## Location
 
 For each of the two dataframes, I added the longitude, latitude and altitude of each well provided to me. I looked at the longitude, latitude and altitude that you manually entered to make sure it seemed to make sense, which it does. 
 
+```{r, adding location}
+wells.locations = read.table(wells_loc, sep = "|",header = TRUE);
+owell.metals = cbind(owell.metals, wells.locations);
+owell.chemistry = cbind(owell.chemistry,wells.locations);
+owell.metals;
+owell.chemistry;
+```
+
+
 ## Fault Distance
 
 For each well, I used the .kml file provided to me, double checked the coordinates again, and used the ruler tool to draw lines from the center of the well to the closest fault line I could see to find the distance in meters. I recorded these in a vector, and added it to each data frame. 
+
+```{r, adding fault distance}
+fault.dist = c(900,580,238,1652,550,1780,350,738,1306,850,670,548,2193,2200,1512,488,560,6100,2000,2173,1865,4561,494);
+
+owell.chemistry$fault = fault.dist;
+owell.metals$fault = fault.dist;
+owell.metals;
+owell.chemistry;
+```
 
 ## Geology
 
 For each well, I looked at the .png image to determine what type of geological base the well is in. For each base, I used the first word that describes the base. Some of the wells had multiple strings, as they sit between two bases. After the vector was made, i appended it to the end of each data frame.
 
-# Description of the Data in the End
-The source of the data is from an article written in 2013 called "Groundwater Quality of Coastal Aquifer Systems in the Eastern Coast of the Gulf of Aqaba, Saudi Arabia" written by Ahmed A Al-Taani, Awni T Batayneh, Saad Mogren, Yousef Habous Nazzal. The purpose of the article is to assess shallow groundwater quality along the Gulf of Aqaba. It also aims to determine the status of saline intrusions, the cause of groundwater contamination and the potential for contamination. After modifying the data for table1, it contains 15 columns which represent different dissolved metals in the 23 wells analyzed in the article. The values are rounded to the nearest 100th for the different metals. The 16th column is the well number, the 16th, 17th and 18th columns are longitude, latitude and altitude respectively. Columns 20 and 21 are the distance in meters to the nearest fault, and the geological composition of the well respectively. For table2, it contains 20 columns which represent different physical and chemical parameters for the 23 wells analyzed.  The 21st column is the well number, the 22nd, 23rd and 24th columns are longitude, latitude and altitude respectively. Columns 25 and 26 are the distance in meters to the nearest fault, and the geological composition of the well respectively.
-
-My github repository, as well as the dropbox data folder contains a README.txt offering further description of the data sets, and provides a data dictionary for each of the tables. 
-
-```{r, reading in well data}
-
-owell.metals = read.table('table1.txt');
-owell.chemistry = read.table("table2.txt");
-wells.locations = read.table("wells-location.txt", sep = "|",header = TRUE);
-owell.metals = cbind(owell.metals, wells.locations);
-owell.chemistry = cbind(owell.chemistry,wells.locations);
-
-fault.dist = c(900,580,238,1652,550,1780,350,738,1306,850,670,548,2193,2200,1512,488,560,6100,2000,2173,1865,4561,494);
-
-owell.chemistry$fault = fault.dist;
-owell.metals$fault = fault.dist;
-
+```{r, adding geology}
 geology = c("Sand","Alkaline ,Granite","Alkaline"," Alkaline","Granite, Volcanic","Volcanic","Gypsum","Alkaline","Gypsum","Volcanic","Alkaline, Granite","Granite","Gypsum","Gypsum","Volcanic","Alkaline, Granite, Volcanic","Sand, Gypsum","Sand","Sand","Sand","sand","Sand","Alkaline, Granite");
 
 owell.chemistry$geology = geology;
 owell.metals$geology = geology ;
+owell.metals;
+owell.chemistry;
+```
 
-owell.chemistry = owell.chemistry[c(21,1:20,22:)]
+## Organizing Data Frame
+
+I put the well number to be the first column for each data frame.
+
+```{r, organizing columns}
+owell.chemistry = owell.chemistry[c(21,1:20,22:26)]
+owell.metals = owell.metals[c(16,1:15,17:21)]
+
+owell.metals;
+owell.chemistry;
+```
+
+## Saving Data Frames in a List and as An RDS File
+
+```{r, saving them as a list}
 wells = list();
 wells$saudi = list();
 wells$saudi$metals = owell.metals;
@@ -88,5 +104,78 @@ wells$saudi$chemistry = owell.chemistry;
 
 saveRDS(wells, "wells.rds");
 
-
 ```
+
+
+# Description of the Data in the End
+The source of the data is from an article written in 2013 called "Groundwater Quality of Coastal Aquifer Systems in the Eastern Coast of the Gulf of Aqaba, Saudi Arabia" written by Ahmed A Al-Taani, Awni T Batayneh, Saad Mogren, Yousef Habous Nazzal. The purpose of the article is to assess shallow groundwater quality along the Gulf of Aqaba. It also aims to determine the status of saline intrusions, the cause of groundwater contamination and the potential for contamination. After modifying the data for table1, it contains 15 columns which represent different dissolved metals in the 23 wells analyzed in the article. The values are rounded to the nearest 100th for the different metals. The 16th column is the well number, the 16th, 17th and 18th columns are longitude, latitude and altitude respectively. Columns 20 and 21 are the distance in meters to the nearest fault, and the geological composition of the well respectively. For table2, it contains 20 columns which represent different physical and chemical parameters for the 23 wells analyzed.  The 21st column is the well number, the 22nd, 23rd and 24th columns are longitude, latitude and altitude respectively. Columns 25 and 26 are the distance in meters to the nearest fault, and the geological composition of the well respectively.
+
+My github repository, as well as the dropbox data folder contains a README.txt offering further description of the data sets, and provides a data dictionary for each of the tables.  
+
+Here is the data dictionary:  
+
+The table1, table1_original, table2, table2_original text document were retrieved from  article written in 2013 called "Groundwater Quality of Coastal Aquifer Systems in the Eastern Coast of the Gulf of Aqaba, Saudi Arabia" written by Ahmed A Al-Taani, Awni T Batayneh, Saad Mogren, Yousef Habous Nazzal. The purpose of the article is to assess shallow groundwater quality along the Gulf of Aqaba. It also aims to determine the status of saline intrusions, the cause of groundwater contamination and the potential for contamination.  
+
+Retrieved on 2/8/2021 at 3:50pm   
+
+
+table1.txt contents:  
+table1.txt contains only the metals, well numbers and the values for the metals for each well, as this is all I needed for analysis. 
+table1.txt contains 15 different metals present in the 23 wells analyzed in the article described above. The 15 metals are:  
+As: Arsenic  
+B: Boron  
+Ba: Barium  
+Be: Beryllium  
+Cd: Cadmium  
+Cr: Chromium  
+Cu: Copper  
+Fe: Iron  
+Hg: Mercury  
+Mn: Manganese  
+Mo: Molybdenum  
+Pb: Lead  
+Se: Selenium  
+Zn: Zinc  
+
+UNIT OF MEASUREMENT: μg/L  
+
+table1_original contents:  
+table_original.txt contains the same information as table1.txt, in addition to:  
+* Title for the table  
+* Figure number from article  
+* Units of measgement (μg/L)  
+* Mean, Max, Min, Median, SD, N for the samples.  
+* Key for each of the terms above.  
+
+
+table2.txt contains physical and chemical properties from the well samples. It contains 20 columns with various chemical properties/elements. The 20 properties are:  
+pH: The pH of the water  
+Eh: redox measurement of the water (oxidation-reduction)  
+TDS: Total Dissolved Solids  
+Ca: Calcium  
+K: Potassium  
+Mg: Magnesium  
+Na: Sodium  
+HCO3: Bicarbonate  
+Cl: Chlorine  
+SO4: Sulfate  
+NO3: Nitrate  
+F: Flourine  
+PO4: Phosphate  
+TH: Thorium  
+TA: Tantalum  
+TS: Tennessine  
+SS: Stainless Steel  
+COD: Chemical Oxygen Demand  
+BOD: Biological Oxygen Demand  
+DO: Dissolves Oxygen  
+
+UNITS: mV mg/L
+
+table_original.txt contains the same information as table1.txt, in addition to:  
+* Title for the table  
+* Figure number from article  
+* Units of measgement (mV, mg/L)  
+* Mean, Max, Min, SD for wells 1-17 and for wells 18-22.  
+* Key for each of the terms above.   
+
