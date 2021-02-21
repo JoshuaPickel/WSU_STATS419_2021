@@ -1,0 +1,20 @@
+---
+title: 'R Notebook: O-well2'
+author: "Josh Pickel [Joshua.Pickel]"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+```{r}
+read.table("table1.txt")
+install.packages('corrplot')
+library(corrplot)
+# library(tidyverse)
+
+git.path = "https://github.com/JoshuaPickel/WSU_STATS419_2021/raw/main/workspace/o-well/wells.rds"
+
+well.data = readRDS(url(git.path))
+
+```
+

@@ -1,0 +1,15 @@
+---
+title: 'R Notebook: O-well2'
+author: "Josh Pickel [Joshua.Pickel]"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+```{r}
+github.path = "https://github.com/JoshuaPickel/WSU_STATS419_2021/blob/main/workspace/o-well/wells.rds"
+
+readRDS("wells.rds")
+
+```
+
