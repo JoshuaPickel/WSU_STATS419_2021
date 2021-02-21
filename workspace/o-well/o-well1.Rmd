@@ -74,7 +74,7 @@ owell.chemistry;
 For each well, I looked at the .png image to determine what type of geological base the well is in. For each base, I used the first word that describes the base. Some of the wells had multiple strings, as they sit between two bases. After the vector was made, i appended it to the end of each data frame.
 
 ```{r, adding geology}
-geology = c("Sand","Alkaline ,Granite","Alkaline","Alkaline","Granite, Volcanic","Volcanic","Gypsum","Alkaline","Gypsum","Volcanic","Alkaline, Granite","Granite","Gypsum","Gypsum","Volcanic","Alkaline, Granite, Volcanic","Sand, Gypsum","Sand","Sand","Sand","Sand","Sand","Alkaline, Granite");
+geology = c("Sand","Alkaline, Granite","Alkaline","Alkaline","Granite, Volcanic","Volcanic","Gypsum","Alkaline","Gypsum","Volcanic","Alkaline, Granite","Granite","Gypsum","Gypsum","Volcanic","Alkaline, Granite, Volcanic","Sand, Gypsum","Sand","Sand","Sand","Sand","Sand","Alkaline, Granite");
 
 owell.chemistry$geology = geology;
 owell.metals$geology = geology ;
