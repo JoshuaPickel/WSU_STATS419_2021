@@ -2,19 +2,293 @@
 title: 'R Notebook: O-well2'
 author: "Josh Pickel [Joshua.Pickel]"
 output:
+  pdf_document:
+    extra_dependencies: ["float"]
+    fig_caption: yes
   html_document:
     df_print: paged
-  pdf_document: default
 ---
-```{r}
-read.table("table1.txt")
-install.packages('corrplot')
-library(corrplot)
-# library(tidyverse)
+```{r, setup, echo = FALSE}
+knitr::opts_chunk$set(fig.pos = "H", out.extra = "")
 
+```
+
+```{r, Top of the world, echo = FALSE, message = FALSE}
+
+# install.packages('matrixStats')
+# library(matrixStats)
+#library(tidyverse)
+# install.packages('corrplot')
+library(corrplot)
+#install.packages("ggpubr")
+library(ggpubr)
+# install.packages("conover.test")
+library(conover.test)
 git.path = "https://github.com/JoshuaPickel/WSU_STATS419_2021/raw/main/workspace/o-well/wells.rds"
+git.functions = "https://raw.githubusercontent.com/JoshuaPickel/WSU_STATS419_2021/main/functions/functions-stats.R/stats-func.R"
+source(git.functions)
+```
+# Data Summary
+
+The source of the data is from an article written in 2013 called "Groundwater Quality of Coastal Aquifer Systems in the Eastern Coast of the Gulf of Aqaba, Saudi Arabia" written by Ahmed A Al-Taani, Awni T Batayneh, Saad Mogren, Yousef Habous Nazzal. The purpose of the article is to assess shallow groundwater quality along the Gulf of Aqaba. It also aims to determine the status of saline intrusions, the cause of groundwater contamination and the potential for contamination. After modifying the data for table1, it contains 21 columns which represent the well number, different dissolved metals in the 23 wells analyzed in the article, longigtude, latitude, altitude and geological composition. The values are rounded to the nearest 100th for the different metals. The first column is the well number, the 17th, 18th and 19th columns are longitude, latitude and altitude respectively. Columns 20 and 21 are the distance in meters to the nearest fault, and the geological composition of the well respectively. For table2, it contains 26 columns which represent the well number, different physical and chemical parameters for the 23 wells analyzed longitude, latitude, altitude and geological composition.  The first column is the well number, the 22nd, 23rd and 24th columns are longitude, latitude and altitude respectively. Columns 25 and 26 are the distance in meters to the nearest fault, and the geological composition of the well respectively.
+
+## Data Dictionary 
+
+As: Arsenic  
+B: Boron  
+Ba: Barium  
+Be: Beryllium  
+Cd: Cadmium  
+Cr: Chromium  
+Cu: Copper  
+Fe: Iron  
+Hg: Mercury  
+Mn: Manganese  
+Mo: Molybdenum  
+Pb: Lead  
+Se: Selenium  
+Zn: Zinc  
+
+UNIT OF MEASUREMENT: ug/L  
+
+pH: The pH of the water  
+Eh: redox measurement of the water (oxidation-reduction)  
+TDS: Total Dissolved Solids  
+Ca: Calcium  
+K: Potassium  
+Mg: Magnesium  
+Na: Sodium  
+HCO3: Bicarbonate  
+Cl: Chlorine  
+SO4: Sulfate  
+NO3: Nitrate  
+F: Flourine  
+PO4: Phosphate  
+TH: Thorium  
+TA: Tantalum  
+TS: Tennessine  
+SS: Stainless Steel  
+COD: Chemical Oxygen Demand  
+BOD: Biological Oxygen Demand  
+DO: Dissolves Oxygen  
+
+UNITS: mV mg/L
+
+
+# Reading Data
+
+## Accessing .RDS remotely
+To read in the data remotely, I used the github.path specifying where the .rds file is located on my github repository, and read it in using the tidyverse package. I saved it as a variable so I can access the data frames stored in the 'wells.rds' list. 
+
+```{r, Grabbing data from Github, echo = FALSE}
 
 well.data = readRDS(url(git.path))
 
 ```
+## Merging Chemistry and Metals Data Frames
+To merge the two data frames, I used the 'merge' function to join the two tables where they share attributes. So for the 'chemistry' and 'metals' data frames, this would be 'well', 'latitude', 'longitude', 'altitude.ft', 'fault' and 'geology'. The result is one data frame that contains the shared attributes, as well as the values for chemistry and metals for each well. So there is now one data frame with all the relevant information needed for analyses for each well number. I then saved the data frame as a '.txt' file with a pipe separated delimiter named 'saudi.txt'
+```{r, merging data frames "saudi.txt", echo = FALSE}
+big.df = merge(well.data$saudi$chemistry,well.data$saudi$metals, by = c("well","latitude","longitude","altitude.ft","fault","geology"), sort = FALSE)
+
+write.table(big.df,"saudi.txt",sep = "|")
+
+```
+
+# Overall Basics
+
+## Summary
+Looking at the summary, we can see there are several attributes with high variance. I wrote my own functions to compute the various summary statistics reported here, and wrote them such that I can call on each function individually and get the result with the attribute name. Being the variance seems to be quite different from attribute to attribute, I would like to visualize the variances.
+
+```{r, summary, echo = FALSE}
+Summary = doSummary(big.df, FALSE)
+Summary
+```
+
+## Variance
+```{r, Variance plot, fig.cap = "Barplot of Variancesf", echo = FALSE} 
+barplot(as.matrix(Summary['Variance',2:40]),las = 2, cex.names = .75,cex.axis = .75, cex.lab = .75, main = "Variances", xlab = "Element", ylab = "Variance",  mgp = c(3.25,.5,0))
+
+```
+  
+Looking at the variances for each attribute, we can see there are 6 attributes that seem to vary a lot, and 4 that have a high enough variance worth looking into. (See Figure 1). Altitude.ft, fault, TDS, NA, CL, and TS have very high variation. CA, SO4, TH, and SS have lower, but still "high" variation. 
+# Deeper Analysis
+
+## Looking at Geology
+I now want to look at how the values of TDS, TS and Cl differ between the different rock formations.
+### TDS
+
+Being there are some elements with high variation, specifically TDS, I want to look and see if the "geology" attribute seems to have an effect on TDS. To do this, I will group the different "geology" values and see how they compare. (I realized I had some typos in my "geology" vector for o-well1, so I changed that). To look at the differences, I will make a boxplot using ggplot to see how different TDS is between the geology groups. 
+
+```{r, geology boxplot TDS, fig.cap = "Geology Group Boxplot for TDS", echo = FALSE}
+geologyFactors = well.data$saudi$chemistry
+geologyFactors$geology = as.factor(geologyFactors$geology)
+
+
+ggboxplot(geologyFactors,x = "geology", y = "TDS", color = "geology", x.text.angle = 45, ylab = "TDS mg/L", font.legend = 6)
+
+```
+
+Looking at this boxplot (Figure 2) we can see that wells that have a Sand rock formation have higher values of TDS than any other rock formation group. We can also see that wells with a Gypsum rock formation have an outlier. Wells that have a Sand rock formation have 50% of their data between approximately 2,500 mg/L and 6,250 mg/L.. It is also apparent that wells with a Sand rock formation have a fairly large spread of TDS values when compared to other rock formations. 
+
+
+### TS
+Being TS has the highest variance, I want to look and see if the "geology" attribute seems to have an effect on TS. I will use the same geology groups created when analyzing TDS, and see what the results show. 
+
+```{r, geology boxplot TS,  fig.cap = "Geology Group Boxplot for TS", echo = FALSE}
+ggboxplot(geologyFactors,x = "geology", y = "TS", color = "geology", x.text.angle = 45, ylab = "TS mg/L", font.legend = 6)
+```
+
+Interestingly, the two boxplots look identical (Figure 2 and Figure 3). Wells that have an Alkaline/Granite rock formation have a lower median in TS than TDS, but again, wells with Sand rock formations have a higher amount of TS when compared to the other formations. Although wells with a Sand rock formation see 50% of their TS values between 3,750 mg/L and approximately 7,800 mg/L. 
+
+
+### Cl
+I am now curious if Cl is higher with Sand rock formations than other formations. Again, using the same geology factors created above, I am going to make a boxplot to look at Cl levels between different rock formations.
+
+```{r,geology boxplot Cl, fig.cap = "Geology Group Boxplot for Cl", echo = FALSE}
+ggboxplot(geologyFactors,x = "geology", y = "Cl", color = "geology", x.text.angle = 45, ylab = "Cl mg/L", font.legend = 6)
+```
+
+Once again, wells with a Sand rock formation have far higher amounts of Cl than any other rock formations (See Figure 4. This is leading me to believe the high variation in some of the attributes might be related to the type of rock formation the well is. Now I am interesting in seeing if there are any differences in the 3 well groups for TDS, Ts, and Cl.
+
+## Difference Between Well Groups
+I am now going to look at the three different well groups, and see if their mean values for TDS, TS, and Cl are different. 
+To do this,  I created a separate data frame adding a group column and grouped the wells by referencing the pdf. Group 1 is wells 1-17, group 2 is wells 18-22 and group 3 is only well 23. I then created the group a factor, and looked at the difference in TDS, Ts and Cl values.
+
+### Making Groups
+```{r, creating croups, echo = FALSE}
+wellGroups = well.data$saudi$chemistry
+wellGroups$group = c(rep(1,17),rep(2,5),3)
+wellGroups$group = as.factor(wellGroups$group)
+
+
+```
+### Looking at TDS
+```{r, well group boxplot TDS, fig.cap = "Well Group Boxplot for TDS", echo = FALSE}
+ggboxplot(wellGroups,x = "group", y = "TDS", color = "group", ylab = "TDS mg/L")
+```
+
+It is apparent that group 2 has 50% of its TDS values being greater than both group 1 and group 3. Group 3 is obviously one well, and it a bit lower than group 2 (See Figure 5). But there seems to be a pretty big difference in TDS values from group 1 and group 2. 50% of group 2's TDS values are between approximately 3,500 mg/L and 6,500 mg/L. While most of group 1's TDS values are below approximately 2,200 mg/L.
+
+### Looking at TS
+```{r, well group boxplot TS, fig.cap = "Well Group Boxplot for TS", echo = FALSE}
+ggboxplot(wellGroups,x = "group", y = "TS", color = "group", ylab = "TS mg/L")
+```
+
+Once again, we can see that group 2 has higher TS values than group 1 or group 3 (See Figure 6). 50% of the TS values for group 2 are between approximately 4,900 mg/L and 9,000 mg/L. This is far higher than group 1 whose TS values are between approximately 2,500 and 3,200 mg/L. 
+
+
+
+### Looking at Cl
+```{r, well group boxplot Cl, fig.cap = "Well Group Boxplot for Cl", echo = FALSE}
+ggboxplot(wellGroups,x = "group", y = "Cl", color = "group", ylab = "Cl mg/L")
+```
+
+So this is really interesting to me. 50% of group 2's values are between two outliers, one high outlier and one low outlier. But still, group 2 has higher Cl values then either group 1 or group 3 (See Figure 7).
+Looking at the data frame, I guess this isn't too surprising, ass all of group 2's wells have a sand rock formation. So it seems that having a Sand rock formation has an effect on the TDS, TS and Cl levels in a well. 
+
+## Looking at Altitude
+Now I wanted to look and see how different altitude is between the different rock formations.
+
+```{r, geology group boxplot Altitude, fig.cap = "Well Geology Group Boxplot for Altitude", echo = FALSE}
+ggboxplot(geologyFactors,x = "geology", y = "altitude.ft", color = "geology", ylab = "Altitude in Feet", x.text.angle = 45, font.legend = 6)
+```
+
+I found this to be very interesting. Wells that are a sand rock formation tend to have lower altitudes than the other rock formations (See Figure 8). So this might mean that TDS, TS and Cl might not be higher in Sand rock formations because of the sand, but maybe it's the altitude, and maybe the altitude has something to do with sand formations. 
+
+## Checking Means Between Groups
+I now want to implement a test to determine if there is any significant difference between the TDS, TS, and CL values between the different rock formations. 
+
+## Using Kruskal-Wallis to Test Different Mean-Ranks of TDS, TS, and Cl Between Rock Formations
+I used the Kruskal-Wallis test, because I do not know what distribution the data falls under, and I am not so familiar with how to test for distributions. I did some research and decided to play it safe for now and read about the tests as time permits. Kruskal-Wallis allows me to do an experiment that I would normally do using a one-way ANOVA, when the assumptions of the one-way ANOVA fail. http://www.biostathandbook.com/kruskalwallis.html
+
+### TDS
+```{r, Kruskal-Wallis for TDS, echo = FALSE}
+kruskal.test(TDS ~ geology, data = geologyFactors)
+```
+We can see that because the p-value of the Kruskal-Wallis test is low, then we can assume there is a difference in TDS mean ranks between the different rock formations. However, we do not yet know which groups are different, which will be investigated later in the notebook.
+### TS
+
+```{r, Kruskal-Wallis for TS, echo = FALSE}
+kruskal.test(TS ~ geology, data = geologyFactors)
+```
+We can see that because the p-value of the Kruskal-Wallis test is low, then we can assume there is a difference in TS mean ranks between the different rock formations. However, we do not yet know which groups are different, which will be investigated later in the notebook.
+
+### Cl
+```{r, Kruskal-Wallis for Cl, echo = FALSE}
+kruskal.test(Cl ~ geology, data = geologyFactors)
+```
+We can see that because the p-value of the Kruskal-Wallis test is low, then we can assume there is a difference in Cl mean ranks between the different rock formations. However, we do not yet know which groups are different, which will be investigated later in the notebook.
+
+I find it very interesting that indeed, there does seem to be a difference in these 3 attributes that have high variances between the different rock formations. This could mean that the rock formations do indeed have an impact on the levels of TDS, TS and Cl in the wells. 
+
+## Looking at Which Groups are Different for TDS, TS and Cl Between Different Rock Formations
+
+To determine which groups are different when it comes to TDS, TS, and Cl, I used the conover test, which is the non parametric form of Levene's test for equality of variance and will provide some insight on which groups are statistically different.  https://en.wikipedia.org/wiki/Squared_ranks_test#:~:text=In%20statistics%2C%20the%20Conover%20squared,test%20for%20equality%20of%20variance.&text=The%20squared%20ranks%20test%20is,dispersion%20not%20variance%20per%20se.
+
+### Looking at TDS
+
+```{r,conover test fto determine different groups, echo = FALSE}
+conover.test(geologyFactors$TDS, geologyFactors$geology, method = "bh")
+
+```
+We can see after running the conover test, that there are specific rock formation combinations that stick out when analyzing TDS measurements. Those combinations are;  
+
+Sand and Alkaline  
+Sand and Alkaline, Granite  
+Sand and Granite, Alkaline, Volcanic  
+Sand and Granite
+Sand, Gypsum and Gypsum
+Sand, Gypsum and Alkaline
+Volcanic and Alkaline
+
+So we can see that Sand seems to be different than most of the groups, indicating that sand might indeed have something to do with increased TDS levels. 
+
+### Looking at TDS
+```{r, conover for TS, echo = FALSE}
+conover.test(geologyFactors$TS, geologyFactors$geology, method = "bh")
+```
+We can see after running the conover test, that there are specific rock formation combinations that stick out when analyzing TDS measurements. Those combinations are;   
+
+Gypsum and Alkaline, Granite  
+Sand and Alkaline  
+Sand and Alkaline, Granite  
+Sand and Granite, Alkaline, Volcanic  
+Sand and Granite
+Sand, Gypsum and Gypsum  
+Sand, Gypsum and Alkaline  
+Volcanic and Alkaline  
+
+We can see that these results are very similar to that of TDS, and it is appearing that Sand may be affecting the amount of TDS and TS in the wells that are on sand rock formations. 
+
+
+### Looking at Cl
+```{r, conover for Cl, echo = FALSE}
+conover.test(geologyFactors$Cl, geologyFactors$geology, method = "bh")
+```
+We can see after running the conover test, that there are specific rock formation combinations that stick out when analyzing TDS measurements. Those combinations are;   
+
+Gypsum and Alkaline Granite  
+Gypsum and Granite  
+Sand and Alkaline  
+Sand and Alkaline, Granite  
+Sand and Granite, Alkaline, Volcanic  
+Sand and Granite  
+Sand, Gypsum and Gypsum  
+Sand, Gypsum and Alkaline  
+Volcanic and Alkaline  
+
+Once again the results are similar for Cl. Sand seems to be different than most other groups, indicating TDS, TS and Cl levels may be affected by Sand. 
+
+## Correlations
+I want to now look at the correlation matrix between TDS, TS, Cl and altitude, longitude, latitude and fault. I am curious how correlated TDS, TS and Cl are to these attributes, aside from all of the other elements and metals. 
+
+```{r, Correlation plot for numeric elements, fig.cap = "Correlation Matrix Plot for Numeric Attributes", echo = FALSE}
+corrplot(cor(as.matrix(big.df[, c("Cl","TDS","TS","longitude","latitude","fault","altitude.ft")])), type = "upper", tl.cex = .7,method = "color", addCoef.col = "black", number.cex = .8)
+
+
+```
+Upon inspection of Figure 9, we can see that the previous analyses make some sense. TDS and TL have a perfect positive correlation, meaning if one of them goes up, the other goes up the same amount. Cl and TDS have a near perfect positive correlation, and so does Cl and TS. It is interesting that all of these 3 elements have some of the highest variation in their amounts, yet they are all nearly perfectly correlated. Being all but one of the wells that have a sand rock formation are in the same group which showed to have higher amounts of TDS, TS and Cl, it is not so surprising that TDS, TS and Cl have a fairly high correlation (.59-.67) between latitude. What is interesting is there is a fairly high correlation between TDS, TS and Cl and fault. This would indicate that as the distance from a fault increases, so does the concentration of these elements. What I find really interesting is that TDS, TS and Cl have a fairly strong negative correlation between altitude. So this does add to the previous though that maybe altitude does have something to do with the concentration of these elements. As altitude goes up, the levels of TDS, TS and Cl go down, meaning lower elevation wells will see higher concentrations. We did wee earlier that most of the wells with Sand rock formations had higher amounts of these elements, and they also were at lower elevations. So I'm, still on the fence about whether it is the sand or elevation, or maybe a combination of both. I will analyze further as we go on. 
+
+# Conclusion
+Considering all of the above analyses, I would say it is safe to say that Wells that have a Sand rock formation have different, specifically higher, levels of TDS, TS and Cl in them when compared to wells with different rock formations. It is also apparent that most of the wells that have a sand rock formation are in group 2, and are typically lower in elevation. This could indicate that elevation may be to blame, and sand is more likely in lower elevations. Further analyses (that I will do later on) will need to be performed to determine the role elevation plays. 
 
