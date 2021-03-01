@@ -1,4 +1,4 @@
-well|wilcox.c|Wilcox.s
+well|Wilcox.C|Wilcox.S
 1|C4|S1
 2|C4|S2
 3|C4|S1
