@@ -105,7 +105,7 @@ Summary
 ```
 
 ## Variance
-```{r, Variance plot, fig.cap = "Barplot of Variancesf", echo = FALSE} 
+```{r, Variance plot, fig.cap = "Barplot of Variances", echo = FALSE} 
 barplot(as.matrix(Summary['Variance',2:40]),las = 2, cex.names = .75,cex.axis = .75, cex.lab = .75, main = "Variances", xlab = "Element", ylab = "Variance",  mgp = c(3.25,.5,0))
 
 ```
